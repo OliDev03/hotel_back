@@ -2,17 +2,36 @@ from fastapi import APIRouter, Depends,HTTPException,status,Response
 from app.config.config_supabase import get_supabase_client
 from app.model.hotel.hotel_model import HotelModel
 from passlib.context import CryptContext
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+#from bson import ObjectId
+import os
+import jwt
 
 hotel_auth_route = APIRouter(
     prefix="/auth/hotel",
     tags=["hotel_auth"]
 )
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
+def create_access_token(data: dict, expire_delta) -> str:
+    secret_key = os.getenv("SECRET_KEY")
+    algorithm = os.getenv("ALGORITHM")
+    if not secret_key or not algorithm:
+        raise ValueError("Missing JWT configuration")
+    if expire_delta:
+        expiration = datetime.utcnow() + expire_delta
+    else:
+        expiration = datetime.utcnow() + timedelta(minutes=15)
+    to_encode = {"exp": expiration, **data}
+    return jwt.encode(to_encode, secret_key, algorithm=algorithm)
+
+
 
 @hotel_auth_route.post("/register")
 async def register_hotel_user(data:HotelModel):
@@ -24,6 +43,7 @@ async def register_hotel_user(data:HotelModel):
             "password": get_password_hash(data.password),
             "role": data.role
         }
+        print(get_password_hash(data.password))
         await supabase.table("user").insert(new_user).execute()
         return {"message":"User registered successfully"}
     except Exception as e:
@@ -31,10 +51,20 @@ async def register_hotel_user(data:HotelModel):
 
 @hotel_auth_route.post("/login")
 async def login_hotel_user(credentials: dict, response: Response):
-    # Implement login logic
-    pass
-
-
+    try:
+        supabase = await get_supabase_client()
+        user = await supabase.table("user").select("*").eq("mail", credentials["mail"]).execute()
+        if not user.data:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+        if not verify_password(credentials["password"], user.data[0]["password"]):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+        access_token_expire = timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE", 30)))
+        access_token = create_access_token(data={"userId": user}, expires_delta=access_token_expire)
+        print(access_token)
+        return {"message": "Login successful", "access_token": access_token}
+    except Exception as e:
+        print(e)
+    
 
 @hotel_auth_route.post("/logout")
 async def logout_hotel_user(response: Response):
