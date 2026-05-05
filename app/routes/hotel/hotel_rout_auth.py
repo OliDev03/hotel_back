@@ -86,7 +86,8 @@ async def login_hotel_user(credentials: dict, response: Response):
         response.set_cookie(
             key="access_token",
             value=access_token,
-            httponly=True
+            httponly=True,
+            samesite="None"
         )
 
         print(access_token)
