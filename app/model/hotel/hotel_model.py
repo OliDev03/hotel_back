@@ -1,7 +1,10 @@
 from pydantic import BaseModel
 
 class HotelModel(BaseModel):
-    name:str
+    id: str 
+    name: str
     mail: str
-    password:str
-    role:str
+    created_at: int
+    password: str
+    role: str
+    address: str
