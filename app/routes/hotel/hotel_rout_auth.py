@@ -86,14 +86,13 @@ async def login_hotel_user(credentials: dict, response: Response):
         response.set_cookie(
             key="access_token",
             value=access_token,
-            httponly=True,
-            max_age=None,
+            httponly=True
         )
 
         print(access_token)
         return {
             "message": "Login successful",
-            "access_token": access_token,
+            "access_token": access_token
         }
     except HTTPException:
         raise
@@ -103,6 +102,23 @@ async def login_hotel_user(credentials: dict, response: Response):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
+
+# @hotel_auth_route.post("/login")
+# async def login_hotel_user(credentials: dict, response: Response):
+#     try:
+#         supabase = await get_supabase_client()
+#         user = await supabase.table("user").select("*").eq("mail", credentials["mail"]).execute()
+#         if not user.data:
+#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+#         if not verify_password(credentials["password"], user.data[0]["password"]):
+#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+#         access_token_expire = timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE", 30)))
+#         access_token = create_access_token(data={"userId": user}, expires_delta=access_token_expire)
+#         print(access_token)
+#         return {"message": "Login successful", "access_token": access_token}
+#     except Exception as e:
+#         print(e)
+    
 
 @hotel_auth_route.post("/logout")
 async def logout_hotel_user(response: Response, is_authenticated: dict= Depends(id_authenticate)):
@@ -157,3 +173,10 @@ async def get_hotel_user_profile(
             detail="Internal server error"
         )
         
+# @hotel_auth_route.get("/profile")
+# async def get_hotel_user_profile(response: Response):
+#     # Implement get user profile logic
+#     try : 
+        
+        
+#     pass
