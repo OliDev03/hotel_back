@@ -90,7 +90,7 @@ async def login_hotel_user(credentials: dict, response: Response):
             samesite="None",
             max_age=3600,
             path="/",
-            secure=True
+            secure=False
         )
 
         print(access_token)
