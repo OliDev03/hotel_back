@@ -8,11 +8,10 @@ from app.middleware.id_authenticate import id_authenticate
 route_product = APIRouter(prefix="/product", tags=["product"])
 ##client##
 @route_product.get("/")
-async def get_product(page: int = 1, limit: int = 20,is_authenticated: dict= Depends(id_authenticate),):
+async def get_product(page: int = 1, limit: int = 20,is_authenticated: int= Depends(id_authenticate),):
     try:
         supabase = await get_supabase_client()
-        user_id = is_authenticated["userId"]
-        user=supabase.table("user").select("*").eq("id",user_id).execute()
+        user=supabase.table("user").select("*").eq("id",is_authenticated).execute()
         if user.data[0]["role"] != "client":
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
