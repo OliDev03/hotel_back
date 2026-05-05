@@ -157,7 +157,9 @@ async def get_hotel_user_profile(
             "message": "Profile fetched successfully",
             "user": {
                 "id": user["id"],
-                "mail": user["mail"]
+                "mail": user["mail"],
+                "name": user["name"],
+                "role": user["role"]
             }
         }
 
