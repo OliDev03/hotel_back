@@ -87,7 +87,10 @@ async def login_hotel_user(credentials: dict, response: Response):
             key="access_token",
             value=access_token,
             httponly=True,
-            samesite="None"
+            samesite="None",
+            max_age=3600,
+            path="/",
+            secure=True
         )
 
         print(access_token)
