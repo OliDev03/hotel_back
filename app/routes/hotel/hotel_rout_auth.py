@@ -84,6 +84,8 @@ async def login_hotel_user(credentials: dict, response: Response):
             expire_delta=access_token_expire
         )
         response.set_cookie(
+            samesite="none",
+            secure=True,
             key="access_token",
             value=access_token,
             httponly=True,
