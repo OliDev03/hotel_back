@@ -8,7 +8,7 @@ ALGORITHM = "HS256"
 async def id_authenticate(request: Request):
     try:
         # Récupérer le token depuis les cookies
-        token = request.cookies.get("access_token")
+        token = request.headers.get("Authorization")
 
         if not token:
             raise HTTPException(
