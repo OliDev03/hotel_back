@@ -11,7 +11,7 @@ route_order = APIRouter(prefix="/order", tags=["order"])
 # ==========================================
 
 @route_order.post("/client", status_code=status.HTTP_201_CREATED)
-async def create_order_by_client(order: OrderModel, supabase: AsyncClient = Depends(get_supabase_client)):
+async def create_order_by_client( order:list[OrderModel], supabase: AsyncClient = Depends(get_supabase_client),is_auth:dict=Depends(id_authenticate)):
     """
     Crée une nouvelle commande pour un client.
     
@@ -23,9 +23,12 @@ async def create_order_by_client(order: OrderModel, supabase: AsyncClient = Depe
         dict: Un message de confirmation et les données de la commande créée.
     """
     # Le client crée une commande
-    order_data = order.model_dump()
-    
-    response = await supabase.table("orders").insert(order_data).execute()
+
+    for order_data in order:
+        order_data = order.model_dump()
+        client_id = is_auth["user_id"]
+        order_data["client_id"] = client_id
+        response = await supabase.table("orders").insert(order_data).execute()
     return {"message": "Order created successfully", "data": response.data}
 
 @route_order.get("/client", status_code=status.HTTP_200_OK)
