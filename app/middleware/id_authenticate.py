@@ -9,7 +9,6 @@ async def id_authenticate(request: Request):
     try:
         # Récupérer le token depuis les cookies
         token = request.headers.get("Authorization")
-
         if not token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
