@@ -4,5 +4,6 @@ class HotelModel(BaseModel):
     name:str
     mail: str
     password:str
-    adress: str = ""
-    phone: str = ""
+    adress: str = None
+    phone: str = None
+    
