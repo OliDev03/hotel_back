@@ -5,7 +5,9 @@ from app.routes.order.route_order import route_order
 from app.routes.product.route_product import route_product
 from fastapi.middleware.cors import CORSMiddleware
 cors_origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "0.0.0.0:5173",
 ]
 
 app = FastAPI()
