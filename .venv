@@ -1,2 +1,4 @@
-SUPABASE_URL:
-SUPABASE_KEY:
+SUPABASE_URL="https://uppdmovaqqtqibuxfrbw.supabase.co"
+SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcGRtb3ZhcXF0cWlidXhmcmJ3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzg0ODExOCwiZXhwIjoyMDkzNDI0MTE4fQ.BUxis4JahT3tEkQVqCIf2Rc0G319sFtLab41yfe5iSY"
+ALGORITHM="HS256"
+SECRET_KEY="your_secret_key"
